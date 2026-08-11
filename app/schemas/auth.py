@@ -5,6 +5,10 @@ class GoogleLoginIn(BaseModel):
     id_token: str
 
 
+class DevLoginIn(BaseModel):
+    email: str
+
+
 class TokenOut(BaseModel):
     access_token: str
     token_type: str = "bearer"

@@ -19,7 +19,14 @@ cp .env.example .env   # fill in values
 createdb kunphen       # or create the DB however you manage Postgres
 alembic upgrade head
 python -m scripts.seed # optional: seed mock data
-uvicorn app.main:app --reload
+```
+
+## Run
+
+```bash
+cd /home/lungsang/Project/kunphen/kunphen-backend
+source .venv/bin/activate
+uvicorn app.main:app --port 8000
 ```
 
 API docs: http://localhost:8000/docs
