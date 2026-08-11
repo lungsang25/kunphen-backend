@@ -7,7 +7,10 @@ from app.routers.cms import auth as cms_auth
 from app.routers.cms import gallery as cms_gallery
 from app.routers.cms import medicines as cms_medicines
 from app.routers.cms import uploads as cms_uploads
-from app.routers.public import articles, gallery, medicines
+# NB: this package must not be named "public" — Vercel strips directories with that
+# name from the function bundle (it treats them as static assets), which makes the
+# import fail at runtime in production while working fine locally.
+from app.routers.public_api import articles, gallery, medicines
 
 app = FastAPI(title="Kunphen API", version="0.1.0")
 
