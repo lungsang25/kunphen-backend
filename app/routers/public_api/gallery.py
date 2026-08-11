@@ -3,14 +3,14 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models import GalleryImage
-from app.schemas.gallery import GalleryImageOut
+from app.models import GalleryAlbum
+from app.schemas.gallery import GalleryAlbumOut
 
 router = APIRouter(prefix="/gallery", tags=["public-gallery"])
 
 
-@router.get("", response_model=list[GalleryImageOut])
-def list_gallery_images(db: Session = Depends(get_db)):
+@router.get("", response_model=list[GalleryAlbumOut])
+def list_gallery_albums(db: Session = Depends(get_db)):
     return db.scalars(
-        select(GalleryImage).order_by(GalleryImage.sort_order, GalleryImage.id)
+        select(GalleryAlbum).order_by(GalleryAlbum.sort_order, GalleryAlbum.id)
     ).all()

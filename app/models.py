@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import DateTime, Integer, String, Text, func
+from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, func
 from sqlalchemy.dialects.postgresql import ARRAY
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
 
@@ -44,11 +44,38 @@ class Article(Base):
     )
 
 
+class GalleryAlbum(Base):
+    __tablename__ = "gallery_albums"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(300), default="")
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+
+    # selectin so the list endpoints don't N+1; routers hand ORM objects straight to
+    # FastAPI, so the images must already be loaded when serialization runs.
+    images: Mapped[list["GalleryImage"]] = relationship(
+        back_populates="album",
+        cascade="all, delete-orphan",
+        order_by="GalleryImage.sort_order",
+        lazy="selectin",
+    )
+
+
 class GalleryImage(Base):
     __tablename__ = "gallery_images"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    album_id: Mapped[int] = mapped_column(
+        ForeignKey("gallery_albums.id", ondelete="CASCADE"), index=True, nullable=False
+    )
     image_url: Mapped[str] = mapped_column(String(1000), nullable=False)
     caption: Mapped[str] = mapped_column(String(500), default="")
+    # Position within the album. The first image is the album cover.
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    album: Mapped["GalleryAlbum"] = relationship(back_populates="images")

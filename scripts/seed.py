@@ -5,7 +5,7 @@ Usage: python -m scripts.seed
 from datetime import datetime, timezone
 
 from app.database import SessionLocal
-from app.models import Article, GalleryImage, Medicine
+from app.models import Article, GalleryAlbum, GalleryImage, Medicine
 
 PLACEHOLDER = "/placeholder.svg"
 
@@ -83,15 +83,17 @@ ARTICLES = [
     },
 ]
 
+# (album title, album sort_order, [image captions]). A few albums hold several images
+# so the multi-image grid affordance and the lightbox pager have something to show.
 GALLERY = [
-    ("Morning prayers at the monastery", 1),
-    ("Traditional herb preparation", 2),
-    ("Consultation with Dr. Dorje", 3),
-    ("Tibetan medicine formulations", 4),
-    ("Medicinal herb garden", 5),
-    ("Community health camp", 6),
-    ("Patient wellness seminar", 7),
-    ("Research laboratory", 8),
+    ("Morning prayers at the monastery", 1, ["Dawn assembly in the main hall", "Butter lamps at the altar", "Monks preparing the offerings"]),
+    ("Traditional herb preparation", 2, ["Sorting the raw herbs", "Grinding by hand", "Weighing the formulation", "Rolling the finished pills"]),
+    ("Consultation with Dr. Dorje", 3, []),
+    ("Tibetan medicine formulations", 4, ["Precious pills", "Agar-35 ingredients"]),
+    ("Medicinal herb garden", 5, []),
+    ("Community health camp", 6, ["Registration desk", "Pulse diagnosis", "Dispensing medicines", "Closing address"]),
+    ("Patient wellness seminar", 7, []),
+    ("Research laboratory", 8, ["Sample analysis", "Quality control"]),
 ]
 
 
@@ -110,12 +112,20 @@ def seed() -> None:
         else:
             print("Articles already seeded, skipping")
 
-        if db.query(GalleryImage).count() == 0:
+        if db.query(GalleryAlbum).count() == 0:
             db.add_all(
-                GalleryImage(image_url=PLACEHOLDER, caption=caption, sort_order=order)
-                for caption, order in GALLERY
+                GalleryAlbum(
+                    title=title,
+                    sort_order=order,
+                    # An album always has a cover, so captionless albums still get one image.
+                    images=[
+                        GalleryImage(image_url=PLACEHOLDER, caption=caption, sort_order=i)
+                        for i, caption in enumerate(captions or [""])
+                    ],
+                )
+                for title, order, captions in GALLERY
             )
-            print(f"Seeded {len(GALLERY)} gallery images")
+            print(f"Seeded {len(GALLERY)} gallery albums")
         else:
             print("Gallery already seeded, skipping")
 
