@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, func
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, func, true
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -38,6 +38,25 @@ class Article(Base):
     content: Mapped[str] = mapped_column(Text, default="")
     image_url: Mapped[str] = mapped_column(String(1000), default="")
     published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+
+
+class HeroSlide(Base):
+    """A slide in the homepage hero slider: a 16:9 image with a title and subtitle."""
+
+    __tablename__ = "hero_slides"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    image_url: Mapped[str] = mapped_column(String(1000), nullable=False)
+    title: Mapped[str] = mapped_column(String(200), default="")
+    subtitle: Mapped[str] = mapped_column(String(500), default="")
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    # Lets an editor park a slide instead of deleting it — the S3 object behind a
+    # deleted slide can't be cleaned up, so removal is the more expensive choice.
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, server_default=true())
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()

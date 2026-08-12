@@ -19,6 +19,7 @@ cp .env.example .env   # fill in values
 createdb kunphen       # or create the DB however you manage Postgres
 alembic upgrade head
 python -m scripts.seed # optional: seed mock data
+python -m scripts.seed_hero_slides  # optional: push the website's bundled hero images to S3
 ```
 
 ## Run
@@ -26,7 +27,7 @@ python -m scripts.seed # optional: seed mock data
 ```bash
 cd /home/lungsang/Project/kunphen/kunphen-backend
 
-
+source .venv/bin/activate
 uvicorn app.main:app --port 8000
 ```
 
@@ -43,6 +44,7 @@ API docs: http://localhost:8000/docs
 | GET | `/api/articles` | List articles (`?category=`, `?search=`) |
 | GET | `/api/articles/{slug}` | Full article by slug |
 | GET | `/api/gallery` | List gallery images |
+| GET | `/api/hero-slides` | List active homepage hero slides |
 
 ### CMS (Bearer JWT required)
 
@@ -52,4 +54,6 @@ API docs: http://localhost:8000/docs
 | * | `/api/cms/medicines...` | Full CRUD |
 | * | `/api/cms/articles...` | Full CRUD |
 | * | `/api/cms/gallery...` | Full CRUD |
+| * | `/api/cms/hero-slides...` | Full CRUD |
+| PUT | `/api/cms/hero-slides/reorder` | Set slide order from a list of ids |
 | POST | `/api/cms/uploads/presign` | Get S3 presigned PUT URL |
