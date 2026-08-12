@@ -3,7 +3,7 @@
 The images live in the website repo as bundled assets, so they have to be pushed to
 S3 before the CMS can own them. Idempotent: does nothing once hero_slides has rows.
 
-Usage: python -m scripts.seed_hero_slides [path/to/New-kunphen-website/src/assets]
+Usage: python -m scripts.seed_hero_slides [path/to/kunphen-frontend/src/assets]
 """
 import sys
 from pathlib import Path
@@ -13,7 +13,7 @@ from app.models import HeroSlide
 from app.services.s3 import upload_bytes
 
 DEFAULT_ASSETS_DIR = (
-    Path(__file__).resolve().parents[2] / "New-kunphen-website" / "src" / "assets"
+    Path(__file__).resolve().parents[2] / "kunphen-frontend" / "src" / "assets"
 )
 
 # Filename, title and subtitle, copied verbatim from the website's HeroSlider.tsx so
