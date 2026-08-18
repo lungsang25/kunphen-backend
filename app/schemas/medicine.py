@@ -10,6 +10,11 @@ class MedicineBase(BaseModel):
     full_description: str = ""
     image_url: str = ""
     uses: list[str] = []
+    category: str = ""
+    price: float = 0
+    in_stock: bool = True
+    dosage: str = ""
+    notes: str = ""
 
 
 class MedicineCreate(MedicineBase):
@@ -23,6 +28,11 @@ class MedicineUpdate(BaseModel):
     full_description: str | None = None
     image_url: str | None = None
     uses: list[str] | None = None
+    category: str | None = None
+    price: float | None = None
+    in_stock: bool | None = None
+    dosage: str | None = None
+    notes: str | None = None
 
 
 class MedicineOut(MedicineBase):

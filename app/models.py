@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, func, true
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, Numeric, String, Text, func, true
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -21,6 +21,11 @@ class Medicine(Base):
     full_description: Mapped[str] = mapped_column(Text, default="")
     image_url: Mapped[str] = mapped_column(String(1000), default="")
     uses: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
+    category: Mapped[str] = mapped_column(String(100), default="")
+    price: Mapped[float] = mapped_column(Numeric(10, 2, asdecimal=False), default=0)
+    in_stock: Mapped[bool] = mapped_column(Boolean, default=True, server_default=true())
+    dosage: Mapped[str] = mapped_column(String(500), default="")
+    notes: Mapped[str] = mapped_column(String(500), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
@@ -34,6 +39,7 @@ class Article(Base):
     title: Mapped[str] = mapped_column(String(300), nullable=False)
     slug: Mapped[str] = mapped_column(String(300), unique=True, index=True, nullable=False)
     category: Mapped[str] = mapped_column(String(100), default="")
+    author: Mapped[str] = mapped_column(String(200), default="")
     excerpt: Mapped[str] = mapped_column(String(1000), default="")
     content: Mapped[str] = mapped_column(Text, default="")
     image_url: Mapped[str] = mapped_column(String(1000), default="")

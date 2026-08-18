@@ -7,6 +7,7 @@ class ArticleBase(BaseModel):
     title: str
     slug: str
     category: str = ""
+    author: str = ""
     excerpt: str = ""
     content: str = ""
     image_url: str = ""
@@ -21,6 +22,7 @@ class ArticleUpdate(BaseModel):
     title: str | None = None
     slug: str | None = None
     category: str | None = None
+    author: str | None = None
     excerpt: str | None = None
     content: str | None = None
     image_url: str | None = None
@@ -34,6 +36,7 @@ class ArticleListOut(BaseModel):
     title: str
     slug: str
     category: str
+    author: str
     excerpt: str
     image_url: str
     published_at: datetime
