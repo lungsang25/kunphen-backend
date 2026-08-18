@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
+from app.routers.cms import analytics as cms_analytics
 from app.routers.cms import articles as cms_articles
 from app.routers.cms import auth as cms_auth
 from app.routers.cms import gallery as cms_gallery
@@ -34,6 +35,7 @@ app.include_router(cms_articles.router, prefix="/api/cms")
 app.include_router(cms_gallery.router, prefix="/api/cms")
 app.include_router(cms_hero_slides.router, prefix="/api/cms")
 app.include_router(cms_uploads.router, prefix="/api/cms")
+app.include_router(cms_analytics.router, prefix="/api/cms")
 
 
 @app.get("/health")

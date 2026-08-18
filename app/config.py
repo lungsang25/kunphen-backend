@@ -21,6 +21,14 @@ class Settings(BaseSettings):
 
     dev_auth_enabled: bool = False
 
+    # Google Analytics 4 (read side for the Studio dashboard).
+    # ga4_property_id is the numeric property id (Admin > Property Settings),
+    # NOT the "G-XXXX" measurement id used by the website tag.
+    ga4_property_id: str = ""
+    # Service-account key, either raw JSON or base64-encoded JSON. Base64 is the
+    # safer form for Vercel env vars, which mangle embedded newlines.
+    ga4_credentials_json: str = ""
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
@@ -28,6 +36,10 @@ class Settings(BaseSettings):
     @property
     def allowed_email_list(self) -> list[str]:
         return [e.strip().lower() for e in self.allowed_emails.split(",") if e.strip()]
+
+    @property
+    def ga4_configured(self) -> bool:
+        return bool(self.ga4_property_id and self.ga4_credentials_json)
 
 
 settings = Settings()
